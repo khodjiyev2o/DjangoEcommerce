@@ -1,17 +1,28 @@
 from .models import Customer
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from django.contrib.auth.models import User
+from django.forms import ModelForm
 
 
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(max_length=75, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(required=True)
 
     class Meta:
-        model = Customer
+        model = User
         fields = ["username", "password1", "password2", "email"]
 
-    def __init__(self, *args, **kwargs):
-        super(RegistrationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs['class'] = 'form-control'
-        self.fields['password1'].widget.attrs['class'] = 'form-control'
-        self.fields['password2'].widget.attrs['class'] = 'form-control'
+    def save(self, commit=True):
+        customer = super().save(commit=False)
+
+        customer.email = self.cleaned_data['email']
+
+        if commit:
+            customer.save()
+            return customer
+
+
+class UserprofileForm(ModelForm):
+    class Meta:
+        model = Customer
+        fields = ('phone',)

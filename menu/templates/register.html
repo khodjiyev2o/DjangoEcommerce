@@ -7,7 +7,12 @@
 <body>
 
 Register
-
+<form action="" method="POST">
+{%csrf_token%}
+{{forms.as_p}}
+    {{customer_form.as_p}}
+    <input type="submit" value="Create">
+</form>
 </body>
 </html>
 

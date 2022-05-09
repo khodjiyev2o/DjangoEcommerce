@@ -6,4 +6,7 @@ from django.contrib.auth.models import User
 
 class Customer(models.Model):
     customer = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField()
+    phone = models.IntegerField(max_length=11)
+
+    def __str__(self):
+        return self.customer.username
