@@ -1,13 +1,30 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-Hello world
-</body>
-</html>
+{%extends 'layout.html'%}
+{% load static %}
+
+{%block content%}
+<div class="row">
+{%for product in products%}
+
+    <div class="col-lg-4">
+		{%if product.image%}
+			<img class="thumbnail" src="{{product.image.url}}">
+		{%else%}
+        	<img class="thumbnail" src="{% static 'images/placeholder.png' %}">
+		{%endif%}
+		<div class="box-element product">
+        <h6><strong>{{product.name}}</strong></h6>
+		<hr>
+
+		<button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
+		<a class="btn btn-outline-success" href="{% url 'viewpage' product.id  %}">View</a>
+		<h4 style="display: inline-block; float: right"><strong>${{product.price}}</strong></h4>
+		</div>
+	</div>
+
+
+
+
+{%endfor%}
+</div>
+
+{%endblock%}
