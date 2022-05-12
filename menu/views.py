@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import RegistrationForm, UserprofileForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from .models import Product
+from .models import Product,OrderItem
 from django.views.generic.detail import DetailView
 
 # Create your views here.
@@ -25,7 +25,11 @@ def checkout(request):
 
 def cart(request):
     if request.user.is_authenticated:
-        return render(request, 'cart.html')
+        print(request.user.customer)
+        orderitem = OrderItem.objects.all().filter(customer=request.user.customer)
+
+        print(orderitem)
+        return render(request, 'cart.html',{'orderitem':orderitem})
     else:
         return redirect('login')
 
