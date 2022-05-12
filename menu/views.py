@@ -27,9 +27,9 @@ def cart(request):
     if request.user.is_authenticated:
         print(request.user.customer)
         orderitem = OrderItem.objects.all().filter(customer=request.user.customer)
+        product = Product.objects.all()
 
-        print(orderitem)
-        return render(request, 'cart.html',{'orderitem':orderitem})
+        return render(request, 'cart.html',{'orderitem':orderitem,"product":product})
     else:
         return redirect('login')
 
