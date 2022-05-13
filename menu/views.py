@@ -3,8 +3,9 @@ from django.contrib import messages
 from .forms import RegistrationForm, UserprofileForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from .models import Product,OrderItem
+from .models import Product, OrderItem,Order
 from django.views.generic.detail import DetailView
+
 
 # Create your views here.
 
@@ -18,28 +19,26 @@ def layout(request):
 
 def checkout(request):
     if request.user.is_authenticated:
-        return render(request, 'checkout.html')
+        order = Order.objects.get(customer=request.user.id)
+        orderitem = OrderItem.objects.filter(order=order)
+        return render(request, 'checkout.html',{'order':order,'orderitem':orderitem})
     else:
         return redirect('login')
 
 
 def cart(request):
     if request.user.is_authenticated:
-        print(request.user.customer)
-        orderitem = OrderItem.objects.all().filter(customer=request.user.customer)
-        product = Product.objects.all()
-
-        return render(request, 'cart.html',{'orderitem':orderitem,"product":product})
+        order=Order.objects.get(customer=request.user.id)
+        orderitem=OrderItem.objects.filter(order=order)
+        return render(request, 'cart.html', {'orderitem': orderitem,'order':order})
     else:
         return redirect('login')
 
 
-
-
 def menu(request):
     if request.user.is_authenticated:
-        product=Product.objects.all()
-        return render(request, 'menu.html',{'products':product})
+        product = Product.objects.all()
+        return render(request, 'menu.html', {'products': product})
     else:
         return redirect('login')
 
@@ -48,6 +47,7 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'viewpage.html'
     context_object_name = "product"
+
 
 def thelogin(request):
     if request.method == "POST":
@@ -65,7 +65,6 @@ def thelogin(request):
 
 
 def register(request):
-
     form = RegistrationForm()
     customer_form = UserprofileForm()
     if request.method == "POST":

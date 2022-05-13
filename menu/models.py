@@ -24,8 +24,26 @@ class Product(models.Model):
 
 
 
-class OrderItem(models.Model):
+class Order(models.Model):
     customer = models.ForeignKey(Customer, default=None, null=True, on_delete=models.SET_NULL)
+    completed=models.BooleanField(default=False)
+    date_ordered = models.DateField(auto_now=True)
+
+    @property
+    def overallprice(self):
+        return sum([item.totalprice for item in self.orderitem_set.all()])
+
+    @property
+    def overallamount(self):
+        return sum([item.quantity for item in self.orderitem_set.all()])
+
+
+    def __str__(self):
+        return self.customer.customer.username
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, null=True,on_delete=models.SET_NULL)
     date_ordered = models.DateField(auto_now=True)
     product = models.ForeignKey(Product, default=None, null=True, on_delete=models.SET_NULL)
     quantity = models.IntegerField(max_length=10)
@@ -33,7 +51,7 @@ class OrderItem(models.Model):
     def __str__(self):
         return self.product.name
 
+    @property
     def totalprice(self):
         totalprice = self.product.price * self.quantity
         return totalprice
-
