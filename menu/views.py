@@ -3,8 +3,9 @@ from django.contrib import messages
 from .forms import RegistrationForm, UserprofileForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
-from .models import Product, OrderItem,Order
+from .models import Product, OrderItem, Order
 from django.views.generic.detail import DetailView
+from .filters import ProductFilter
 
 
 # Create your views here.
@@ -21,16 +22,17 @@ def checkout(request):
     if request.user.is_authenticated:
         order = Order.objects.get(customer=request.user.id)
         orderitem = OrderItem.objects.filter(order=order)
-        return render(request, 'checkout.html',{'order':order,'orderitem':orderitem})
+        return render(request, 'checkout.html', {'order': order, 'orderitem': orderitem})
     else:
         return redirect('login')
 
 
 def cart(request):
     if request.user.is_authenticated:
-        order=Order.objects.get(customer=request.user.id)
-        orderitem=OrderItem.objects.filter(order=order)
-        return render(request, 'cart.html', {'orderitem': orderitem,'order':order})
+        order, created = Order.objects.get_or_create(customer=request.user.id)
+        # orderitem=OrderItem.objects.filter(order=order)
+        orderitem = order.orderitem_set.all()
+        return render(request, 'cart.html', {'orderitem': orderitem, 'order': order})
     else:
         return redirect('login')
 
@@ -38,7 +40,9 @@ def cart(request):
 def menu(request):
     if request.user.is_authenticated:
         product = Product.objects.all()
-        return render(request, 'menu.html', {'products': product})
+        myFilter = ProductFilter(request.GET, queryset=product)
+        product = myFilter.qs
+        return render(request, 'menu.html', {'products': product, 'myFilter': myFilter})
     else:
         return redirect('login')
 

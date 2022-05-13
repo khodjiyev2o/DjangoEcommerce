@@ -22,11 +22,9 @@ class Product(models.Model):
         return self.name
 
 
-
-
 class Order(models.Model):
     customer = models.ForeignKey(Customer, default=None, null=True, on_delete=models.SET_NULL)
-    completed=models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
     date_ordered = models.DateField(auto_now=True)
 
     @property
@@ -37,13 +35,12 @@ class Order(models.Model):
     def overallamount(self):
         return sum([item.quantity for item in self.orderitem_set.all()])
 
-
     def __str__(self):
         return self.customer.customer.username
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, null=True,on_delete=models.SET_NULL)
+    order = models.ForeignKey(Order, null=True, on_delete=models.SET_NULL)
     date_ordered = models.DateField(auto_now=True)
     product = models.ForeignKey(Product, default=None, null=True, on_delete=models.SET_NULL)
     quantity = models.IntegerField(max_length=10)

@@ -2,7 +2,13 @@
 {% load static %}
 
 {%block content%}
+<form action="" method="get">
+	{{myFilter.form}}
+
+<input type="submit" type="submit">
 <div class="row">
+</form>
+
 {%for product in products%}
 
     <div class="col-lg-4">
