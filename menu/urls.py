@@ -1,7 +1,7 @@
 
 from django.urls import path
 from . import views
-from .views import ProductDetailView
+from .views import ProductDetailView,AuthorCreateView
 urlpatterns = [
     path('',views.menu,name='menu'),
     path('cart', views.cart, name='cart'),
@@ -10,5 +10,6 @@ urlpatterns = [
     path('login', views.thelogin, name='login'),
     path('register', views.register, name='register'),
     path('logout_user', views.logout_user, name='logout_user'),
+    path('create', AuthorCreateView.as_view(), name='create'),
 
 ]

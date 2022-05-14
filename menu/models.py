@@ -13,8 +13,8 @@ class Customer(models.Model):
 
 
 class Product(models.Model):
-    name = models.TextField()
-    price = models.IntegerField(max_length=13)
+    name = models.CharField(max_length=15)
+    price = models.CharField(max_length=13)
     digital = models.BooleanField(default=False)
     image = models.ImageField(upload_to='store/', null=True, blank=True)
 

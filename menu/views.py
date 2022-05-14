@@ -5,10 +5,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from .models import Product, OrderItem, Order
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView
 from .filters import ProductFilter
 from .decorators import unauthenticated_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import View
+
 
 # Create your views here.
 
@@ -42,7 +47,7 @@ def menu(request):
     return render(request, 'menu.html', {'products': product, 'myFilter': myFilter})
 
 
-class ProductDetailView(LoginRequiredMixin,DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
     model = Product
     template_name = 'viewpage.html'
@@ -96,3 +101,15 @@ def logout_user(request):
     logout(request)
     messages.warning(request, 'You have been logged out!')
     return redirect('login')
+
+
+class SuperUserCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class AuthorCreateView(SuperUserCheck, CreateView):
+    model = Product
+    fields = '__all__'
+    template_name = 'admin.html'
+    success_url = '/'
