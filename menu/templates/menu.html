@@ -2,13 +2,24 @@
 {% load static %}
 
 {%block content%}
+
 <form action="" method="get">
-	{{myFilter.form}}
+		<div class="row">
+				<div	class="col-lg-2" ></div>
 
-<input type="submit" type="submit">
-<div class="row">
+				<div class="col-lg-4">
+					{{myFilter.form}}
+				</div>
+				<div class="col-lg-4">
+					<input type="submit" type="submit" class="btn btn-primary" value="Search">
+				</div>
+
+
+
+
+		</div>
 </form>
-
+<div class="row">
 {%for product in products%}
 
     <div class="col-lg-4">

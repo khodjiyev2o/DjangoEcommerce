@@ -6,53 +6,50 @@ from django.http import HttpResponseRedirect
 from .models import Product, OrderItem, Order
 from django.views.generic.detail import DetailView
 from .filters import ProductFilter
-
+from .decorators import unauthenticated_user
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
 
+@login_required(login_url='login')
 def layout(request):
-    if request.user.is_authenticated:
-        return render(request, 'layout.html')
-    else:
-        return redirect('login')
+    return render(request, 'layout.html')
 
 
+@login_required(login_url='login')
 def checkout(request):
-    if request.user.is_authenticated:
-        order = Order.objects.get(customer=request.user.id)
-        orderitem = OrderItem.objects.filter(order=order)
-        return render(request, 'checkout.html', {'order': order, 'orderitem': orderitem})
-    else:
-        return redirect('login')
+    order = Order.objects.get(customer=request.user.id)
+    orderitem = OrderItem.objects.filter(order=order)
+    return render(request, 'checkout.html', {'order': order, 'orderitem': orderitem})
 
 
+@login_required(login_url='login')
 def cart(request):
-    if request.user.is_authenticated:
-        order, created = Order.objects.get_or_create(customer=request.user.id)
-        # orderitem=OrderItem.objects.filter(order=order)
-        orderitem = order.orderitem_set.all()
-        return render(request, 'cart.html', {'orderitem': orderitem, 'order': order})
-    else:
-        return redirect('login')
+    order, created = Order.objects.get_or_create(customer=request.user.id)
+    # orderitem=OrderItem.objects.filter(order=order)
+    orderitem = order.orderitem_set.all()
+    return render(request, 'cart.html', {'orderitem': orderitem, 'order': order})
 
 
+@login_required(login_url='login')
 def menu(request):
-    if request.user.is_authenticated:
-        product = Product.objects.all()
-        myFilter = ProductFilter(request.GET, queryset=product)
-        product = myFilter.qs
-        return render(request, 'menu.html', {'products': product, 'myFilter': myFilter})
-    else:
-        return redirect('login')
+    product = Product.objects.all()
+    myFilter = ProductFilter(request.GET, queryset=product)
+    product = myFilter.qs
+
+    return render(request, 'menu.html', {'products': product, 'myFilter': myFilter})
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin,DetailView):
+    login_url = 'login'
     model = Product
     template_name = 'viewpage.html'
     context_object_name = "product"
 
 
+@unauthenticated_user
 def thelogin(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -68,6 +65,7 @@ def thelogin(request):
         return render(request, 'login.html')
 
 
+@unauthenticated_user
 def register(request):
     form = RegistrationForm()
     customer_form = UserprofileForm()
