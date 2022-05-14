@@ -1,0 +1,11 @@
+{%extends 'layout.html'%}
+{% load static %}
+
+{%block content%}
+<form action="" method="POST">
+    {%csrf_token%}
+<label for="Delete">Do you really want to delete this <strong>{{product.name}}</strong> which costs <strong>{{product.price}}</strong>?</label></br>
+<a href="{%url 'viewpage' product.id %}" class="btn btn-outline-primary" >NO</a>
+<input type="submit" name="Delete" value="Yes" class="btn btn-danger" >
+</form>
+{%endblock%}

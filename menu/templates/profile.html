@@ -1,0 +1,71 @@
+{%extends 'layout.html'%}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{%block content%}
+
+<style>
+	.profile-pic{
+		max-width: 200px;
+		max-height:200px;
+		margin: 0 auto;
+		border-radius: 50%;
+	}
+</style>
+
+
+<br>
+<div class="row">
+	<div class="col-md-3">
+		<div class="card card-body">
+			<a class="btn btn-warning" href="{% url 'menu' %}"> &#8592; Back to Profile</a>
+			<hr>
+			<h3 style="text-align: center">Account Settings</h3>
+			<hr>
+            {%if request.user.customer.image%}
+			<img class="profile-pic" src="{{request.user.customer.image.url}}">
+		    {%else%}
+        	<img src="https://img.icons8.com/officel/200/000000/user.png"/>
+		    {%endif%}
+
+
+
+
+		</div>
+	</div>
+	<div class="col-md-7">
+		<div class="card card-body">
+
+			<form method="POST" action="" enctype="multipart/form-data" >
+				{% csrf_token %}
+				 {{ forms|crispy }}
+				 {{ customer_forms|crispy }}
+			<input class="btn btn-primary" type="submit" value="Update">
+			</form>
+
+
+		</div>
+
+	</div>
+
+
+
+    <div class="col-md-2">
+        {%if user.is_authenticated%}
+        <a href="{%url 'logout_user' %}" class="btn btn-danger">Log out</a>
+
+        {%else%}
+         <a href="{%url 'login' %}"class="btn btn-warning">Login</a>
+        {%endif%}
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+{%endblock%}

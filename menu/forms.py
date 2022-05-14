@@ -25,4 +25,42 @@ class RegistrationForm(UserCreationForm):
 class UserprofileForm(ModelForm):
     class Meta:
         model = Customer
-        fields = ('phone',)
+        fields = ('phone', 'image')
+
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField(max_length=75, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ["username", "first_name", "last_name", "email"]
+        help_texts = {
+            'username': None,
+            'first_name':None,
+            'last_name':None,
+        }
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['first_name'].widget.attrs['class'] = 'form-control'
+        self.fields['last_name'].widget.attrs['class'] = 'form-control'
+
+
+class UpdationForm(forms.ModelForm):
+
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        exclude = ['customer']
+        help_texts = {
+            'image': None,
+        }
+        widgets = {
+            'image': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control'
+            }),
+
+        }

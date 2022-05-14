@@ -12,9 +12,9 @@
 		<div class="box-element product">
         <h6><strong>{{product.name}}</strong></h6>
 		<hr>
+		<a class="btn btn-outline-success" href="{% url 'menu' %}">&#8592;Back</a>
+		<button  class="btn btn-outline-primary add-btn">Add to Cart</button>
 
-		<button  class="btn btn-outline-secondary add-btn">Add to Cart</button>
-		<a class="btn btn-outline-success" href="{% url 'menu' %}">Back</a>
 		<h4 style="display: inline-block; float: right"><strong>${{product.price}}</strong></h4>
 		</div>
 
@@ -25,6 +25,10 @@
 		align-items: center;">
 		<div>
 		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio exercitationem expedita minus vitae voluptatem? Ab alias aperiam autem consequuntur earum illo illum incidunt nam, necessitatibus odio placeat quasi reprehenderit vitae?
+			{%if user.is_superuser%}
+			<a class="btn btn-primary" href="{% url 'update' product.id  %}">Update</a>
+			<a class="btn btn-danger" href="{% url  'delete' product.id  %}">Delete</a>
+			{%endif%}
 		</div>
 		</div>
 </div>
