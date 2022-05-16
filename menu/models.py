@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save,post_save
+from django.dispatch import receiver
 
 
 # Create your models here.
@@ -9,10 +11,21 @@ class Customer(models.Model):
     phone = models.CharField(max_length=13)
     image = models.ImageField(upload_to='store/', null=True, blank=True)
 
-
-
     def __str__(self):
-        return self.customer.username
+        return str(self.customer)
+
+    @property
+    def allcustomers(self):
+        customers = User.objects.all().count()
+        return customers-1
+
+@receiver(post_save,sender=Customer)
+def my_handler(sender,created,instance, **kwargs):
+    if created:
+        print(instance)
+    else:
+        print(instance, "just saved")
+
 
 
 class Product(models.Model):

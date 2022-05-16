@@ -74,8 +74,12 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Demo_test',
+        'USER':'postgres',
+        'PASSWORD': '2249735',
+        'HOST': 'localhost',
+        'PORT' : '5432',
     }
 }
 
@@ -124,3 +128,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MEDIA
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TSL = True
+EMAIL_HOST_USER = 'samandarkhodjiyev@gmail.com'
+EMAIL_HOST_PASSWORD = 'muza12345'
+DEFAULT_FROM_EMAIL = 'samandarkhodjiyev@gmail.com'
+SERVER_EMAIL = 'samandarkhodjiyev@gmail.com'

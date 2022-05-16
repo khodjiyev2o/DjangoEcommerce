@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from .models import Product, OrderItem, Order, Customer
 from django.contrib.auth.models import User
+from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .filters import ProductFilter
@@ -15,6 +16,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import View
 
+
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -106,11 +109,11 @@ def logout_user(request):
 
 
 @login_required(login_url='login')
-def profileupdate(request,pk):
+def profileupdate(request, pk):
     if request.method == "POST":
 
-        userform = UserUpdateForm(request.POST,instance=request.user)
-        customer_form = UpdationForm(request.POST,request.FILES,instance=request.user.customer)
+        userform = UserUpdateForm(request.POST, instance=request.user)
+        customer_form = UpdationForm(request.POST, request.FILES, instance=request.user.customer)
 
         if userform.is_valid and customer_form.is_valid:
             user = userform.save()
@@ -151,3 +154,14 @@ class AuthorDeleteView(SuperUserCheck, DeleteView):
     template_name = 'delete.html'
     success_url = '/'
     fields = '__all__'
+
+
+class CustomerView(SuperUserCheck, ListView):
+    model = Customer
+    template_name = 'customers.html'
+    context_object_name = "customers"
+    success_url = '/'
+    queryset = Customer.objects.exclude(customer=1)
+
+
+
