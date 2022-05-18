@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os
 from pathlib import Path
+import django_heroku
+import dj_database_url
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +27,7 @@ SECRET_KEY = 'django-insecure-*i4ib+ejc-87y&y(vput6fa4&i%61nh5_26b9xhhdu$y7$k91m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['django-ecommerce2o.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['django-ecommerce2o.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
@@ -88,7 +91,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR,'db.sqlite3')
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
 # Password validation
@@ -122,7 +125,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATIC_ROOT =  os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
@@ -137,7 +140,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -146,3 +148,5 @@ EMAIL_HOST_USER = 'samandarkhodjiyev@gmail.com'
 EMAIL_HOST_PASSWORD = 'muza12345'
 DEFAULT_FROM_EMAIL = 'samandarkhodjiyev@gmail.com'
 SERVER_EMAIL = 'samandarkhodjiyev@gmail.com'
+
+django_heroku.settings(locals())

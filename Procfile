@@ -1,1 +1,1 @@
-web: gunicorn django-ecommerce2o.wsgi --log-file - --log-level debug
+web: gunicorn ecommerce.wsgi --log-file - --log-level debug
