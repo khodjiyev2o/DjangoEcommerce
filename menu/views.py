@@ -24,7 +24,8 @@ from django.shortcuts import get_object_or_404
 
 @login_required(login_url='login')
 def layout(request):
-    return render(request, 'layout.html')
+    order, created = Order.objects.get_or_create(customer=request.user.customer)
+    return render(request, 'layout.html',{'order':order})
 
 
 @login_required(login_url='login')
@@ -45,6 +46,7 @@ def cart(request):
 
 @login_required(login_url='login')
 def menu(request):
+
     product = Product.objects.all()
     myFilter = ProductFilter(request.GET, queryset=product)
     product = myFilter.qs
