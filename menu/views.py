@@ -46,12 +46,12 @@ def cart(request):
 
 @login_required(login_url='login')
 def menu(request):
-
+    order, created = Order.objects.get_or_create(customer=request.user.customer)
     product = Product.objects.all()
     myFilter = ProductFilter(request.GET, queryset=product)
     product = myFilter.qs
 
-    return render(request, 'menu.html', {'products': product, 'myFilter': myFilter})
+    return render(request, 'menu.html', {'products': product,'order':order, 'myFilter': myFilter})
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
