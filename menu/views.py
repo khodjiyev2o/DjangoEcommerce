@@ -25,14 +25,27 @@ from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
-class OrderItemApiView(generics.RetrieveAPIView):
+class OrderItemApiView(generics.ListCreateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
 
 
+class OrderRetrieveApiView(generics.RetrieveAPIView):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
 
-
-
+@api_view(["GET","POST"])
+def products(request,pk=None, *args, **kwargs):
+    if request.method == 'GET':
+        if pk is None:
+            queryset = Product.objects.all()
+            data = ProductSerializer(queryset, many=True).data
+            return Response(data)
+        else:
+            queryset = get_object_or_404(Product,pk=pk)
+            data = ProductSerializer(queryset, many=False).data
+            return Response(data)
+'''
 @api_view(["GET"])
 def products(request, *args, **kwargs):
     instance = Product.objects.all()
@@ -41,7 +54,7 @@ def products(request, *args, **kwargs):
         data = ProductSerializer(instance, many=True).data
     return Response(data)
 
-
+'''
 
 
 

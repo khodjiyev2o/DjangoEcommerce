@@ -33,6 +33,8 @@ urlpatterns = [
          name='password_reset_complete'),
 
 
-    path('api/products', views.products, name='products'),
-    path('api/orderitem/<int:pk>/', views.OrderItemApiView.as_view(), name='orderitem'),
+    path('api/products/<int:pk>/', views.products, name='products'),
+    path('api/products/', views.products, name='productss'),
+    path('api/orderitems/', views.OrderItemApiView.as_view(), name='orderitems'),
+    path('api/orderitem/<int:pk>/', views.OrderRetrieveApiView.as_view(), name='orderitem'),
 ]
