@@ -43,6 +43,9 @@ def products(request, *args, **kwargs):
 
 
 
+
+
+
 @login_required(login_url='login')
 def layout(request):
     order, created = Order.objects.get_or_create(customer=request.user.customer)
