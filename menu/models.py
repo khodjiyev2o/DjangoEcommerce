@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save,post_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 
@@ -17,15 +17,15 @@ class Customer(models.Model):
     @property
     def allcustomers(self):
         customers = User.objects.all().count()
-        return customers-1
+        return customers - 1
 
-@receiver(post_save,sender=Customer)
-def my_handler(sender,created,instance, **kwargs):
+
+@receiver(post_save, sender=Customer)
+def my_handler(sender, created, instance, **kwargs):
     if created:
         print(instance)
     else:
         print(instance, "just saved")
-
 
 
 class Product(models.Model):

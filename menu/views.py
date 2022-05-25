@@ -16,16 +16,37 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import View
 
-
+from rest_framework.response import Response
+from rest_framework import generics
+from django.http import HttpResponse, JsonResponse
+from .serializers import ProductSerializer, OrderItemSerializer
+from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
+
 # Create your views here.
+class OrderItemApiView(generics.RetrieveAPIView):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
+
+
+
+
+
+@api_view(["GET"])
+def products(request, *args, **kwargs):
+    instance = Product.objects.all()
+    data = {}
+    if instance:
+        data = ProductSerializer(instance, many=True).data
+    return Response(data)
+
 
 
 @login_required(login_url='login')
 def layout(request):
     order, created = Order.objects.get_or_create(customer=request.user.customer)
-    return render(request, 'layout.html',{'order':order})
+    return render(request, 'layout.html', {'order': order})
 
 
 @login_required(login_url='login')
@@ -51,7 +72,7 @@ def menu(request):
     myFilter = ProductFilter(request.GET, queryset=product)
     product = myFilter.qs
 
-    return render(request, 'menu.html', {'products': product,'order':order, 'myFilter': myFilter})
+    return render(request, 'menu.html', {'products': product, 'order': order, 'myFilter': myFilter})
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -164,6 +185,3 @@ class CustomerView(SuperUserCheck, ListView):
     context_object_name = "customers"
     success_url = '/'
     queryset = Customer.objects.exclude(customer=1)
-
-
-
