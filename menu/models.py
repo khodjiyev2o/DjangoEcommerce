@@ -59,7 +59,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, null=True, on_delete=models.SET_NULL)
     date_ordered = models.DateField(auto_now=True)
     product = models.ForeignKey(Product, default=None, null=True, on_delete=models.SET_NULL)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.product)

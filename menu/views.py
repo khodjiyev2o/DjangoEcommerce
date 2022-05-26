@@ -23,6 +23,8 @@ from .serializers import ProductSerializer, OrderItemSerializer
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
+import json
+
 
 # Create your views here.
 class OrderItemApiView(generics.ListCreateAPIView):
@@ -34,17 +36,45 @@ class OrderRetrieveApiView(generics.RetrieveAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
 
-@api_view(["GET","POST"])
-def products(request,pk=None, *args, **kwargs):
+@api_view(('POST',))
+def OrderUpdate(request):
+
+
+    data=request.data
+    productid = data['productId']
+    action = data['action']
+    product = Product.objects.get(id=productid)
+
+    order, created = Order.objects.get_or_create(customer=request.user.customer)
+
+    orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == "add":
+        orderItem.quantity = (orderItem.quantity + 1)
+        orderItem.save()
+    elif action == "remove":
+        orderItem.quantity = (orderItem.quantity - 1)
+        orderItem.save()
+
+    if orderItem.quantity <= 0:
+        orderItem.delete()
+    print(order, orderItem)
+
+    return Response("hi")
+
+@api_view(["GET", "POST"])
+def products(request, pk=None, *args, **kwargs):
     if request.method == 'GET':
         if pk is None:
             queryset = Product.objects.all()
             data = ProductSerializer(queryset, many=True).data
             return Response(data)
         else:
-            queryset = get_object_or_404(Product,pk=pk)
+            queryset = get_object_or_404(Product, pk=pk)
             data = ProductSerializer(queryset, many=False).data
             return Response(data)
+
+
 '''
 @api_view(["GET"])
 def products(request, *args, **kwargs):
@@ -55,8 +85,6 @@ def products(request, *args, **kwargs):
     return Response(data)
 
 '''
-
-
 
 
 @login_required(login_url='login')
@@ -96,6 +124,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'viewpage.html'
     context_object_name = "product"
+
 
 
 @unauthenticated_user
@@ -166,7 +195,11 @@ def profileupdate(request, pk):
     else:
         userform = UserUpdateForm(instance=request.user)
         customer_form = UpdationForm(instance=request.user.customer)
-    return render(request, 'profile.html', {"forms": userform, "customer_forms": customer_form})
+
+
+    order, created = Order.objects.get_or_create(customer=request.user.customer)
+
+    return render(request, 'profile.html', {"forms": userform, "customer_forms": customer_form,'order':order})
 
 
 class SuperUserCheck(UserPassesTestMixin, View):

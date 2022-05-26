@@ -13,21 +13,25 @@ for(i = 0; i < updateBtns.length; i++) {
 }
 
 
-function orderupdate(product,action){
-    console.log("active")
-    var url = 'http://127.0.0.1:8000/api/orderitem/1/'
-    fetch(url, {
-				method:'POST',
-				headers:{
-					'Content-type':'application/json',
-					'X-CSRFToken':csrftoken,
-				},
-				body:JSON.stringify({'product':product,'action':action})
-			}
-			).then(function(response){
-				console.log(response)
-			})
 
+function orderupdate(productId, action){
+	console.log('User is authenticated, sending data...')
 
+		var url = 'api/orderitem/update/'
+
+		fetch(url, {
+			method:'POST',
+			headers:{
+				'Content-Type':'application/json',
+				'X-CSRFToken':csrftoken,
+			},
+			body:JSON.stringify({'productId':productId, 'action':action})
+		})
+		.then((response) => {
+		   return response.json();
+		})
+		.then((data) => {
+		    location.reload()
+		});
 }
 
