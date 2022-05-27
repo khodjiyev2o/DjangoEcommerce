@@ -36,10 +36,37 @@ class OrderRetrieveApiView(generics.RetrieveAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
 
+
+class OrderUpdateApiView(generics.UpdateAPIView):
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
+
+    def post(self,request,*args,**kwargs):
+        data = request.data
+        productid = data['productId']
+        action = data['action']
+        product = Product.objects.get(id=productid)
+
+        order, created = Order.objects.get_or_create(customer=request.user.customer)
+
+        orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+        if action == "add":
+            orderItem.quantity = (orderItem.quantity + 1)
+            orderItem.save()
+        elif action == "remove":
+            orderItem.quantity = (orderItem.quantity - 1)
+            orderItem.save()
+
+        if orderItem.quantity <= 0:
+            orderItem.delete()
+
+
+        return Response("hi")
+
+'''
 @api_view(('POST',))
 def OrderUpdate(request):
-
-
     data=request.data
     productid = data['productId']
     action = data['action']
@@ -61,6 +88,7 @@ def OrderUpdate(request):
     print(order, orderItem)
 
     return Response("hi")
+'''
 
 @api_view(["GET", "POST"])
 def products(request, pk=None, *args, **kwargs):
@@ -76,6 +104,7 @@ def products(request, pk=None, *args, **kwargs):
 
 
 '''
+
 @api_view(["GET"])
 def products(request, *args, **kwargs):
     instance = Product.objects.all()
