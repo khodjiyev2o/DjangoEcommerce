@@ -37,5 +37,7 @@ urlpatterns = [
     path('api/orderitems/', views.OrderItemApiView.as_view(), name='orderitems'),
     path('api/orderitem/update/', views.OrderUpdateApiView.as_view(), name='orderitemupdate'),
     path('api/orderitems/<int:pk>', views.OrderRetrieveApiView.as_view(), name='orderitem'),
+    path('api/customers/', views.CustomerApiView.as_view(), name='customers'),
+
 
 ]

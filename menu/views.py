@@ -19,7 +19,7 @@ from django.views.generic import View
 from rest_framework.response import Response
 from rest_framework import generics
 from django.http import HttpResponse, JsonResponse
-from .serializers import ProductSerializer, OrderItemSerializer
+from .serializers import ProductSerializer, OrderItemSerializer,CustomerSerializer,UserSerializer
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, permissions
@@ -27,7 +27,25 @@ from rest_framework import mixins, permissions
 import json
 
 
+
+
+
+
+
 # Create your views here.
+
+
+
+
+class CustomerApiView(generics.ListCreateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+
+
+
 class OrderItemApiView(generics.ListCreateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
