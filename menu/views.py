@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import RegistrationForm, UserprofileForm, UserUpdateForm, UpdationForm
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from .models import Product, OrderItem, Order, Customer
 from django.contrib.auth.models import User
 from django.views.generic.list import ListView
@@ -22,6 +22,7 @@ from django.http import HttpResponse, JsonResponse
 from .serializers import ProductSerializer, OrderItemSerializer
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
+from rest_framework import mixins, permissions
 
 import json
 
@@ -30,18 +31,22 @@ import json
 class OrderItemApiView(generics.ListCreateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class OrderRetrieveApiView(generics.RetrieveAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class OrderUpdateApiView(generics.UpdateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def post(self,request,*args,**kwargs):
+    def post(self, request, *args, **kwargs):
         data = request.data
         productid = data['productId']
         action = data['action']
@@ -61,8 +66,8 @@ class OrderUpdateApiView(generics.UpdateAPIView):
         if orderItem.quantity <= 0:
             orderItem.delete()
 
-
         return Response("hi")
+
 
 '''
 @api_view(('POST',))
@@ -90,7 +95,9 @@ def OrderUpdate(request):
     return Response("hi")
 '''
 
-@api_view(["GET", "POST"])
+
+@login_required(login_url='login')
+@api_view(["GET"])
 def products(request, pk=None, *args, **kwargs):
     if request.method == 'GET':
         if pk is None:
@@ -101,6 +108,22 @@ def products(request, pk=None, *args, **kwargs):
             queryset = get_object_or_404(Product, pk=pk)
             data = ProductSerializer(queryset, many=False).data
             return Response(data)
+
+
+class ProductDetail(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
+                    generics.GenericAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        if pk is None:
+            return self.list(request, *args, **kwargs)
+        else:
+            return self.retrieve(request, *args, **kwargs)
 
 
 '''
@@ -153,7 +176,6 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'viewpage.html'
     context_object_name = "product"
-
 
 
 @unauthenticated_user
@@ -225,10 +247,9 @@ def profileupdate(request, pk):
         userform = UserUpdateForm(instance=request.user)
         customer_form = UpdationForm(instance=request.user.customer)
 
-
     order, created = Order.objects.get_or_create(customer=request.user.customer)
 
-    return render(request, 'profile.html', {"forms": userform, "customer_forms": customer_form,'order':order})
+    return render(request, 'profile.html', {"forms": userform, "customer_forms": customer_form, 'order': order})
 
 
 class SuperUserCheck(UserPassesTestMixin, View):
