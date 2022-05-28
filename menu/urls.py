@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from . import views
 from .views import ProductDetailView, AuthorCreateView, AuthorUpdateView, CustomerView, AuthorDeleteView
-
+from rest_framework.authtoken.views import obtain_auth_token
 urlpatterns = [
     # STORE
     path('', views.menu, name='menu'),
@@ -34,10 +34,14 @@ urlpatterns = [
     # API
     path('api/products/<int:pk>/', views.ProductDetail.as_view(), name='products'),
     path('api/products/', views.ProductDetail.as_view(), name='productss'),
+    path('api/products/create', views.ProductCreate.as_view(), name='productscreate'),
     path('api/orderitems/', views.OrderItemApiView.as_view(), name='orderitems'),
     path('api/orderitem/update/', views.OrderUpdateApiView.as_view(), name='orderitemupdate'),
     path('api/orderitems/<int:pk>', views.OrderRetrieveApiView.as_view(), name='orderitem'),
     path('api/customers/', views.CustomerApiView.as_view(), name='customers'),
+
+    # Token
+    path('auth',obtain_auth_token),
 
 
 ]

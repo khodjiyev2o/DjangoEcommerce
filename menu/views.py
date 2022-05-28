@@ -17,24 +17,18 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views.generic import View
 
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, authentication
 from django.http import HttpResponse, JsonResponse
-from .serializers import ProductSerializer, OrderItemSerializer,CustomerSerializer,UserSerializer
+from .serializers import ProductSerializer, OrderItemSerializer, CustomerSerializer, UserSerializer
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins, permissions
-
+from .permissions import IsStaffPermission
+from .authentication import TokenAuthentication
 import json
 
 
-
-
-
-
-
 # Create your views here.
-
-
 
 
 class CustomerApiView(generics.ListCreateAPIView):
@@ -43,7 +37,12 @@ class CustomerApiView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
 
-
+class ProductCreate(generics.CreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = [authentication.SessionAuthentication,
+                              TokenAuthentication]
+    permission_classes = [IsStaffPermission]
 
 
 class OrderItemApiView(generics.ListCreateAPIView):
@@ -114,7 +113,6 @@ def OrderUpdate(request):
 '''
 
 
-@login_required(login_url='login')
 @api_view(["GET"])
 def products(request, pk=None, *args, **kwargs):
     if request.method == 'GET':
@@ -134,7 +132,9 @@ class ProductDetail(mixins.ListModelMixin,
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
-    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.SessionAuthentication,
+                              TokenAuthentication]
+    permission_classes = [IsStaffPermission]
 
     def get(self, request, *args, **kwargs):
         pk = kwargs.get('pk')
