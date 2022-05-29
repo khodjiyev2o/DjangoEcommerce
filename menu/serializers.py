@@ -23,14 +23,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CustomerSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    url =  serializers.HyperlinkedIdentityField(
+        view_name='products',
+        lookup_field='pk'
+    )
+
 
     class Meta:
         model = Customer
-        fields = ['customer', 'phone', 'image', 'id', 'user']
+        fields = ['customer','url','phone', 'image', 'id', 'user']
+
 
     def get_user(self, obj):
-        customer_account_query = User.objects.filter(
+        user = User.objects.filter(
             username=obj.customer)
-        serializer = UserSerializer(customer_account_query, many=True)
+        serializer = UserSerializer(user, many=True)
 
         return serializer.data
