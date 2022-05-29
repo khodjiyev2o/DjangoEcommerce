@@ -25,37 +25,32 @@ from django.shortcuts import get_object_or_404
 from rest_framework import mixins, permissions
 from .permissions import IsStaffPermission
 from .authentication import TokenAuthentication
+from .mixins import StaffEditorPermissionMixin
 import json
 
 
 # Create your views here.
 
 
-class CustomerApiView(generics.ListCreateAPIView):
+class CustomerApiView(generics.ListCreateAPIView,StaffEditorPermissionMixin):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
-class ProductCreate(generics.CreateAPIView):
+class ProductCreate(generics.CreateAPIView,StaffEditorPermissionMixin):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [authentication.SessionAuthentication,
-                              TokenAuthentication]
-    permission_classes = [IsStaffPermission]
 
 
 class OrderItemApiView(generics.ListCreateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class OrderRetrieveApiView(generics.RetrieveAPIView):
+class OrderRetrieveApiView(generics.RetrieveAPIView,StaffEditorPermissionMixin):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
     lookup_field = 'pk'
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class OrderUpdateApiView(generics.UpdateAPIView):

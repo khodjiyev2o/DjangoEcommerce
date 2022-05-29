@@ -153,3 +153,15 @@ DEFAULT_FROM_EMAIL = 'samandarkhodjiyev@gmail.com'
 SERVER_EMAIL = 'samandarkhodjiyev@gmail.com'
 
 django_heroku.settings(locals())
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES":[
+        "rest_framework.authentication.SessionAuthentication",
+        "menu.authentication.TokenAuthentication"
+   ],
+    "DEFAULT_PERMISSION_CLASSES":[
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",
+
+    ]
+}
