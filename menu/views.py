@@ -32,7 +32,10 @@ import json
 # Create your views here.
 
 
-class CustomerApiView(generics.ListCreateAPIView,StaffEditorPermissionMixin):
+class CustomerApiView(generics.ListCreateAPIView,
+                      generics.CreateAPIView,
+                      generics.GenericAPIView,
+                      StaffEditorPermissionMixin):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 

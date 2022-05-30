@@ -9,6 +9,12 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+    def validate_name(self,value):
+        qs=Product.objects.filter(name__iexact=value)
+        if qs.exists():
+            raise serializers.ValidationError(f"this {value} already exists")
+        return value
+
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
@@ -38,3 +44,4 @@ class CustomerSerializer(serializers.ModelSerializer):
         serializer = UserSerializer(user, many=True)
 
         return serializer.data
+
