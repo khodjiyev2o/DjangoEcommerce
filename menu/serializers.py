@@ -1,6 +1,7 @@
 from .models import Product, OrderItem, Customer
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from .validators import validate_name
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -8,9 +9,8 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
-
-    def validate_name(self,value):
-        qs=Product.objects.filter(name__iexact=value)
+    def validate_name(self, value):
+        qs = Product.objects.filter(name__iexact=value)
         if qs.exists():
             raise serializers.ValidationError(f"this {value} already exists")
         return value
@@ -44,4 +44,3 @@ class CustomerSerializer(serializers.ModelSerializer):
         serializer = UserSerializer(user, many=True)
 
         return serializer.data
-
