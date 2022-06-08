@@ -44,3 +44,4 @@ class CustomerSerializer(serializers.ModelSerializer):
         serializer = UserSerializer(user, many=True)
 
         return serializer.data
+
