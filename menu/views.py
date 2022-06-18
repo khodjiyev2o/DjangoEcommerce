@@ -299,4 +299,4 @@ class CustomerView(SuperUserCheck, ListView):
     template_name = 'customers.html'
     context_object_name = "customers"
     success_url = '/'
-    queryset = Customer.objects.exclude(customer=1)
+    queryset = User.objects.select_related('customer').exclude(customer=1)

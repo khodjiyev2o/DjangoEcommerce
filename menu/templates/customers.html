@@ -10,7 +10,10 @@
 	<table class="table">
 		<tr>
 			<th><h5>Groups:<strong></strong></h5></th>
-			<th><h5>Total Customers : <strong>{{request.user.customer.allcustomers}}</strong></h5></th>
+			<th><h5>Total Customers : <strong>
+
+				<b>{{ customers.count }}</b>
+			</strong></h5></th>
 			<th>
 				<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'create' %}">Create products</a>
 
@@ -30,17 +33,17 @@
 	</div>
 {%for customer in customers%}
 	<div class="cart-row">
-		{%if customer.image%}
-		<div style="flex:2"><img class="row-image" src="{{customer.image.url}}"></div>
+		{%if customer.customer.image%}
+		<div style="flex:2"><img class="row-image" src="{{customer.customer.image.url}}"></div>
 		{%else%}
         	<div style="flex:2"><img class="row-image" src="{% static 'images/placeholder.png' %}"></div>
 		{%endif%}
 
 
 		<div style="flex:2"><p>{{customer.customer}}</p></div>
-		<div style="flex:1"><p>{{customer.phone}}</p></div>
+		<div style="flex:1"><p>{{customer.customer.phone}}</p></div>
 		<div style="flex:1">
-			<p class="quantity">{{customer.customer.email}}</p>
+			<p class="quantity">{{customer.email}}</p>
 			<div class="quantity">
 
 			</div>

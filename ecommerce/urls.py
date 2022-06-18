@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('menu.urls')),
     path('api/v2', include('menu.routers')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
