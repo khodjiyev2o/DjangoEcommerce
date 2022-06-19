@@ -163,17 +163,17 @@ def layout(request):
 
 @login_required(login_url='login')
 def checkout(request):
-    order = Order.objects.get(customer=request.user.id)
+    order = Order.objects.filter(customer=request.user.id)
+
     orderitem = OrderItem.objects.filter(order=order)
     return render(request, 'checkout.html', {'order': order, 'orderitem': orderitem})
 
 
 @login_required(login_url='login')
 def cart(request):
-    order, created = Order.objects.get_or_create(customer=request.user.customer)
+    order, created = Order.objects.get_or_create(customer=request.user.id)
+    orderitem = OrderItem.objects.filter(order=order).select_related('product')
 
-    # orderitem=OrderItem.objects.filter(order=order)
-    orderitem = order.orderitem_set.all()
     return render(request, 'cart.html', {'orderitem': orderitem, 'order': order})
 
 
@@ -300,3 +300,4 @@ class CustomerView(SuperUserCheck, ListView):
     context_object_name = "customers"
     success_url = '/'
     queryset = User.objects.select_related('customer').exclude(customer=1)
+
