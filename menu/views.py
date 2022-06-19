@@ -26,7 +26,8 @@ from rest_framework import mixins, permissions
 from .permissions import IsStaffPermission
 from .authentication import TokenAuthentication
 from .mixins import StaffEditorPermissionMixin
-import json
+
+from django.db.models import Sum , IntegerField
 
 
 # Create your views here.
@@ -163,9 +164,10 @@ def layout(request):
 
 @login_required(login_url='login')
 def checkout(request):
-    order = Order.objects.filter(customer=request.user.id)
+    order,created = Order.objects.get_or_create(customer=request.user.id)
 
-    orderitem = OrderItem.objects.filter(order=order)
+    orderitem = OrderItem.objects.filter(order=order).select_related('product')
+
     return render(request, 'checkout.html', {'order': order, 'orderitem': orderitem})
 
 
@@ -173,9 +175,14 @@ def checkout(request):
 def cart(request):
     order, created = Order.objects.get_or_create(customer=request.user.id)
     orderitem = OrderItem.objects.filter(order=order).select_related('product')
-
+    aggr = Order.objects.all().aggregate(average_completion=Sum([item.quantity for item in order.orderitem_set.all()]),output_field=IntegerField())
+    print(aggr.average_completion)
     return render(request, 'cart.html', {'orderitem': orderitem, 'order': order})
 
+    """Review.objects.filter(room=room) \
+        .aggregate(*[Avg(field) for field in ['rating__cleanliness', 'rating__communication', \
+                                              'rating__check_in', 'rating__accuracy', 'rating__location',
+                                              'rating__value']])"""
 
 @login_required(login_url='login')
 def menu(request):
