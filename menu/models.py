@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import QuerySet, Subquery, OuterRef
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-
+from django.db.models import Sum
 
 # Create your models here.
 
@@ -38,10 +39,13 @@ class Product(models.Model):
         return self.name
 
 
+
 class Order(models.Model):
+
     customer = models.ForeignKey(Customer, default=None, null=True, on_delete=models.SET_NULL)
     completed = models.BooleanField(default=False)
     date_ordered = models.DateField(auto_now=True)
+
 
     @property
     def overallprice(self):

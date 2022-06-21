@@ -175,14 +175,10 @@ def checkout(request):
 def cart(request):
     order, created = Order.objects.get_or_create(customer=request.user.id)
     orderitem = OrderItem.objects.filter(order=order).select_related('product')
-    aggr = Order.objects.all().aggregate(average_completion=Sum([item.quantity for item in order.orderitem_set.all()]),output_field=IntegerField())
-    print(aggr.average_completion)
+
     return render(request, 'cart.html', {'orderitem': orderitem, 'order': order})
 
-    """Review.objects.filter(room=room) \
-        .aggregate(*[Avg(field) for field in ['rating__cleanliness', 'rating__communication', \
-                                              'rating__check_in', 'rating__accuracy', 'rating__location',
-                                              'rating__value']])"""
+
 
 @login_required(login_url='login')
 def menu(request):
