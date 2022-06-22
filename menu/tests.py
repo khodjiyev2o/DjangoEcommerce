@@ -1,21 +1,17 @@
 from django.test import TestCase
-from .models import Customer, User
 
 
+from django.contrib.auth.models import User
 # Create your tests here.
 
 
 class CustomerTestCase(TestCase):
+    def setUp(self):
 
-    def setup(self):
-        user = User.objects.create_user(username='testuser', password='12345')
-        customer1 = Customer.objects.create(first_name ='testuser', phone="2249735")
+        user =  User.objects.create_user('Chevy Chase', 'chevy@chase.com', 'chevyspassword')
 
 
-    def customer_number_test(self):
 
-        customer1 = Customer.objects.first()
-
-        self.assertEqual(customer1.allcustomers, int(User.objects.all().count() - 1) )
-
+    def test_contact_count(self):
+        self.assertEqual(User.objects.count(),1)
 

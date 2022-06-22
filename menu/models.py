@@ -16,6 +16,9 @@ class Customer(models.Model):
     def __str__(self):
         return str(self.customer)
 
+
+
+
     @property
     def allcustomers(self):
         customers = User.objects.all().count()
