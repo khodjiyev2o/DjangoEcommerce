@@ -7,6 +7,7 @@ from django.db.models import Sum
 
 # Create your models here.
 
+
 class Customer(models.Model):
     customer = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     phone = models.CharField(max_length=13)

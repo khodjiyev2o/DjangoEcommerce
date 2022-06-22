@@ -164,7 +164,7 @@ def layout(request):
 
 @login_required(login_url='login')
 def checkout(request):
-    order,created = Order.objects.get_or_create(customer=request.user.id)
+    order,created = Order.objects.get_or_create(customer=request.user.customer)
 
     orderitem = OrderItem.objects.filter(order=order).select_related('product')
 
@@ -173,7 +173,7 @@ def checkout(request):
 
 @login_required(login_url='login')
 def cart(request):
-    order, created = Order.objects.get_or_create(customer=request.user.id)
+    order, created = Order.objects.get_or_create(customer=request.user.customer)
     orderitem = OrderItem.objects.filter(order=order).select_related('product')
 
     return render(request, 'cart.html', {'orderitem': orderitem, 'order': order})

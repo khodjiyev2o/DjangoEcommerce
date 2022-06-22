@@ -38,11 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'menu',
+
     'crispy_forms',
     'rest_framework',
     'rest_framework.authtoken',
     "debug_toolbar",
+
+
+    'menu',
 ]
 
 
