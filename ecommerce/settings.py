@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-*i4ib+ejc-87y&y(vput6fa4&i%61nh5_26b9xhhdu$y7$k91m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['django-ecommerce2o.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -159,7 +159,7 @@ EMAIL_HOST_PASSWORD = 'muza12345'
 DEFAULT_FROM_EMAIL = 'samandarkhodjiyev@gmail.com'
 SERVER_EMAIL = 'samandarkhodjiyev@gmail.com'
 
-django_heroku.settings(locals())
+
 
 
 REST_FRAMEWORK = {
